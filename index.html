@@ -28,10 +28,8 @@
        2) 아래 ca-pub-XXXXXXXXXX 를 본인 Publisher ID로 교체
        3) 광고 단위 ID(adslot)도 교체
   ════════════════════════════════════════ -->
-  <!-- AdSense 스크립트 (Publisher ID 발급 후 주석 해제) -->
-  <!--
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
-  -->
+  <!-- AdSense 스크립트 -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8404805453959049" crossorigin="anonymous"></script>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 
@@ -358,20 +356,15 @@
       </div>
     </div>
 
-    <!-- ── 광고 영역 ──────────────────────────────
-         AdSense 발급 후:
-           1. 위의 <script async src="https://pagead2..."> 주석 해제
-           2. 아래 .ad-placeholder 대신 ins.adsbygoogle 블록 사용
-              <ins class="adsbygoogle"
-                   style="display:block"
-                   data-ad-client="ca-pub-XXXXXXXXXXXXXXXXX"
-                   data-ad-slot="XXXXXXXXXX"
-                   data-ad-format="auto"
-                   data-full-width-responsive="true"></ins>
-              <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
-    ─────────────────────────────────────────── -->
+    <!-- ── 광고 영역 (AdSense 자동 광고) ── -->
     <div class="ad-wrap">
-      <div class="ad-placeholder">📢 광고 영역 (AdSense Publisher ID 등록 후 활성화)</div>
+      <ins class="adsbygoogle"
+           style="display:block;width:100%;min-height:50px"
+           data-ad-client="ca-pub-8404805453959049"
+           data-ad-slot="auto"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
     </div>
 
     <!-- CTA 카드 -->
