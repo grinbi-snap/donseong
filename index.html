@@ -425,10 +425,10 @@ const QUESTIONS = [
     emoji: "🎂",
     text: "친구 생일이 2주 후예요. 지금 당신은?",
     options: [
-      { label: "미리 예산 정하고 선물 리서치", scores: { G: 2, F: 1 } },
+      { label: "미리 예산 정하고 선물 리서치", scores: { G: 3 } },
       { label: "당일 편의점에서 빠르게 해결", scores: { A: 3 } },
-      { label: "맛있는 거 사주는 게 최고지", scores: { D: 2, G: 1 } },
-      { label: "특별한 경험 선물 (클래스, 체험)", scores: { H: 2, G: 1 } },
+      { label: "맛있는 거 사주는 게 최고지", scores: { D: 3 } },
+      { label: "특별한 경험 선물 (클래스, 체험)", scores: { H: 3 } },
     ]
   },
   {
@@ -436,7 +436,7 @@ const QUESTIONS = [
     text: "월급날, 가장 먼저 하는 행동은?",
     options: [
       { label: "자동이체로 저축 먼저 빼놓기", scores: { F: 3 } },
-      { label: "사고 싶었던 것 바로 주문", scores: { S: 2, A: 1 } },
+      { label: "사고 싶었던 것 바로 주문", scores: { S: 3 } },
       { label: "이번 달 뭐 먹을지 고민 시작", scores: { D: 3 } },
       { label: "주변에 선물할 사람 떠올리기", scores: { G: 3 } },
     ]
@@ -446,9 +446,9 @@ const QUESTIONS = [
     text: "쇼핑 앱에서 아이쇼핑하다가 마음에 드는 게 생겼어요.",
     options: [
       { label: "바로 결제! 살 때가 행복한 순간", scores: { S: 3 } },
-      { label: "장바구니에 담고 며칠 후 다시 확인", scores: { F: 2, S: 1 } },
       { label: "리뷰 다 읽고 최저가 찾아서 구매", scores: { F: 3 } },
-      { label: "음… 그냥 닫기 (별로 안 필요한 것 같아)", scores: { F: 2, H: 1 } },
+      { label: "친구에게 공유! 같이 살지 물어봄", scores: { G: 3 } },
+      { label: "경험에 쓸 돈이지, 물건은 패스", scores: { A: 3 } },
     ]
   },
   {
@@ -457,8 +457,8 @@ const QUESTIONS = [
     options: [
       { label: "일단 무료 가입! 나중에 끊으면 됨", scores: { U: 3 } },
       { label: "정말 쓸 것 같을 때만 가입", scores: { F: 3 } },
-      { label: "이미 구독 너무 많아서 패스", scores: { U: 2, F: 1 } },
-      { label: "친구랑 같이 쓰자고 연락", scores: { G: 2, U: 1 } },
+      { label: "친구랑 같이 쓰자고 연락", scores: { G: 3 } },
+      { label: "기분 내킬 때 써보고 아니면 끊지 뭐", scores: { A: 3 } },
     ]
   },
   {
@@ -466,9 +466,9 @@ const QUESTIONS = [
     text: "공부 or 재택근무할 때 주로 어디서 하나요?",
     options: [
       { label: "카페 없이는 집중 못해! 매일 카페", scores: { C: 3 } },
-      { label: "카페 가끔, 주로 집에서", scores: { C: 1, F: 1 } },
-      { label: "카페 돈 아까워 — 완전 집돌이/집순이", scores: { F: 2 } },
-      { label: "카페도 가지만 취미 공간(헬스장 등)도", scores: { H: 2, C: 1 } },
+      { label: "카페 돈 아까워 — 집에서 홈카페", scores: { F: 3 } },
+      { label: "취미 공간(헬스장, 독서실)이 더 좋아", scores: { H: 3 } },
+      { label: "그날 기분 따라 즉흥으로 결정", scores: { A: 3 } },
     ]
   },
   {
@@ -476,9 +476,9 @@ const QUESTIONS = [
     text: "배달앱 켜는 빈도가 어느 정도예요?",
     options: [
       { label: "거의 매일 (없으면 뭘 먹어요?)", scores: { D: 3 } },
-      { label: "주 2~3회, 바쁠 때 자주", scores: { D: 2 } },
-      { label: "쿠폰 있을 때나 특별한 날만", scores: { F: 2, D: 1 } },
-      { label: "거의 안 씀 (직접 요리파)", scores: { F: 3 } },
+      { label: "주로 카페 디저트 배달만 시켜요", scores: { C: 3 } },
+      { label: "쿠폰 있을 때나 특별한 날만", scores: { F: 3 } },
+      { label: "먹고 싶은 게 생각나면 바로 주문", scores: { A: 3 } },
     ]
   },
   {
@@ -486,9 +486,9 @@ const QUESTIONS = [
     text: "좋아하는 취미가 생겼어요. 장비 or 재료가 필요합니다.",
     options: [
       { label: "제대로 하려면 장비가 중요! 투자해야지", scores: { H: 3 } },
-      { label: "일단 저렴한 것부터 시작해보기", scores: { F: 2, H: 1 } },
-      { label: "중고로 먼저 구해서 써보기", scores: { F: 3 } },
-      { label: "취미보다 먹고 마시는 게 더 좋아", scores: { D: 2, C: 1 } },
+      { label: "렌탈·구독 서비스로 먼저 체험해보기", scores: { U: 3 } },
+      { label: "중고로 먼저 구해서 확인해보기", scores: { F: 3 } },
+      { label: "취미보다 먹고 마시는 게 더 좋아", scores: { D: 3 } },
     ]
   },
   {
@@ -678,7 +678,18 @@ function showLoading() {
 
 function showResult() {
   // Find winner
-  resultType = Object.entries(scores).sort((a, b) => b[1] - a[1])[0][0];
+  // 타입별 최대 획득 가능 점수 계산 후 정규화 (편향 방지)
+  const maxPossible = {};
+  QUESTIONS.forEach(q => q.options.forEach(opt =>
+    Object.entries(opt.scores).forEach(([k, v]) => {
+      maxPossible[k] = (maxPossible[k] || 0) + v;
+    })
+  ));
+  const normalized = {};
+  Object.keys(scores).forEach(k => {
+    normalized[k] = maxPossible[k] > 0 ? scores[k] / maxPossible[k] : 0;
+  });
+  resultType = Object.entries(normalized).sort((a, b) => b[1] - a[1])[0][0];
   const t = TYPES[resultType];
 
   document.getElementById('r-emoji').textContent = t.emoji;
