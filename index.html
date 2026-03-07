@@ -4,8 +4,34 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>돈성 — 나의 소비 유형 테스트</title>
-  <meta property="og:title" content="돈성 — 나의 소비 유형 테스트" />
-  <meta property="og:description" content="10초 만에 알아보는 내 소비 유형 🔍" />
+
+  <!-- ════════════════════════════════════════
+       OG / SNS 공유 메타태그
+       배포 후 og:url, og:image를 실제 URL로 교체하세요
+  ════════════════════════════════════════ -->
+  <meta property="og:type"        content="website" />
+  <meta property="og:title"       content="돈성 — 나의 소비 유형 테스트 💸" />
+  <meta property="og:description" content="10문항으로 알아보는 내 소비 캐릭터! 나는 쇼핑왕? 카페홀릭? 미래설계자?" />
+  <meta property="og:url"         content="https://YOUR_DEPLOY_URL" />
+  <meta property="og:image"       content="https://YOUR_DEPLOY_URL/og-image.png" />
+  <meta property="og:image:width"  content="1200" />
+  <meta property="og:image:height" content="630" />
+
+  <meta name="twitter:card"        content="summary_large_image" />
+  <meta name="twitter:title"       content="돈성 — 나의 소비 유형 테스트 💸" />
+  <meta name="twitter:description" content="10문항으로 알아보는 내 소비 캐릭터! 결과 공유하면 친구도 테스트해요" />
+  <meta name="twitter:image"       content="https://YOUR_DEPLOY_URL/og-image.png" />
+
+  <!-- ════════════════════════════════════════
+       Google AdSense
+       1) https://adsense.google.com 에서 사이트 등록
+       2) 아래 ca-pub-XXXXXXXXXX 를 본인 Publisher ID로 교체
+       3) 광고 단위 ID(adslot)도 교체
+  ════════════════════════════════════════ -->
+  <!-- AdSense 스크립트 (Publisher ID 발급 후 주석 해제) -->
+  <!--
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
+  -->
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 
@@ -77,11 +103,15 @@
       gap: 10px; width: 100%; margin: 20px 0;
     }
     .char-preview {
-      background: var(--gray-50); border-radius: 12px;
-      padding: 10px 6px; text-align: center; font-size: 11px;
+      background: var(--gray-50); border-radius: 14px;
+      padding: 12px 6px; text-align: center; font-size: 11px;
       color: var(--gray-600); cursor: default;
+      border: 1.5px solid var(--gray-100);
+      transition: all 0.15s;
     }
-    .char-preview .emoji { font-size: 28px; display: block; margin-bottom: 4px; }
+    .char-preview:hover { border-color: var(--blue); background: var(--blue-light); }
+    .char-preview .emoji { font-size: 30px; display: block; margin-bottom: 5px; }
+    .char-preview .char-name { font-weight: 700; color: var(--gray-800); font-size: 12px; }
 
     /* ── PROGRESS BAR ── */
     .progress-bar-wrap {
@@ -147,13 +177,18 @@
     /* ── RESULT ── */
     #result { padding: 0 0 80px; }
     .result-header {
-      padding: 32px 24px 24px;
+      padding: 32px 24px 28px;
       background: linear-gradient(135deg, var(--blue) 0%, #5b8ff9 100%);
       color: #fff; text-align: center;
       border-radius: 0 0 32px 32px;
     }
     .result-label { font-size: 13px; font-weight: 600; opacity: 0.8; margin-bottom: 8px; }
-    .result-emoji { font-size: 72px; display: block; margin: 8px 0; }
+    .result-char-img {
+      width: 120px; height: 120px; margin: 8px auto 12px;
+      background: rgba(255,255,255,0.2); border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 64px; line-height: 1;
+    }
     .result-type { font-size: 28px; font-weight: 800; letter-spacing: -0.5px; }
     .result-tagline { font-size: 14px; opacity: 0.85; margin-top: 8px; line-height: 1.5; }
 
@@ -217,10 +252,16 @@
     /* ── BOTTOM CTA area ── */
     .btn-area { padding: 0 24px; display: flex; flex-direction: column; gap: 10px; }
 
-    /* ── AD PLACEHOLDER ── */
-    .ad-placeholder {
+    /* ── AD ── */
+    .ad-wrap {
       margin: 0 24px 16px;
-      background: var(--gray-100); border-radius: 12px;
+      min-height: 56px;
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden; border-radius: 12px;
+    }
+    /* 광고 미연동 시 표시되는 placeholder */
+    .ad-placeholder {
+      width: 100%; background: var(--gray-100); border-radius: 12px;
       height: 56px; display: flex; align-items: center; justify-content: center;
       font-size: 12px; color: var(--gray-400);
     }
@@ -251,14 +292,14 @@
         <span class="badge">📤 공유 가능</span>
       </div>
       <div class="landing-characters">
-        <div class="char-preview"><span class="emoji">🛍️</span>쇼핑왕</div>
-        <div class="char-preview"><span class="emoji">☕</span>카페홀릭</div>
-        <div class="char-preview"><span class="emoji">🍕</span>외식러버</div>
-        <div class="char-preview"><span class="emoji">📱</span>구독수집가</div>
-        <div class="char-preview"><span class="emoji">🎮</span>취미투자자</div>
-        <div class="char-preview"><span class="emoji">💰</span>미래설계자</div>
-        <div class="char-preview"><span class="emoji">🎁</span>선물요정</div>
-        <div class="char-preview"><span class="emoji">🎲</span>즉흥모험가</div>
+        <div class="char-preview"><span class="emoji">🛍️</span><span class="char-name">쇼핑왕</span></div>
+        <div class="char-preview"><span class="emoji">☕</span><span class="char-name">카페홀릭</span></div>
+        <div class="char-preview"><span class="emoji">🍕</span><span class="char-name">외식러버</span></div>
+        <div class="char-preview"><span class="emoji">📱</span><span class="char-name">구독수집가</span></div>
+        <div class="char-preview"><span class="emoji">🎮</span><span class="char-name">취미투자자</span></div>
+        <div class="char-preview"><span class="emoji">💰</span><span class="char-name">미래설계자</span></div>
+        <div class="char-preview"><span class="emoji">🎁</span><span class="char-name">선물요정</span></div>
+        <div class="char-preview"><span class="emoji">🎲</span><span class="char-name">즉흥모험가</span></div>
       </div>
     </div>
     <div style="padding: 0 24px 16px; width:100%">
@@ -300,7 +341,7 @@
   <div id="result" class="screen">
     <div class="result-header">
       <div class="result-label">당신의 소비 유형은</div>
-      <span class="result-emoji" id="r-emoji"></span>
+      <div class="result-char-img" id="r-emoji"></div>
       <div class="result-type" id="r-type"></div>
       <div class="result-tagline" id="r-tagline"></div>
     </div>
@@ -317,8 +358,21 @@
       </div>
     </div>
 
-    <!-- 광고 영역 -->
-    <div class="ad-placeholder">📢 광고 영역 (AdMob 배너)</div>
+    <!-- ── 광고 영역 ──────────────────────────────
+         AdSense 발급 후:
+           1. 위의 <script async src="https://pagead2..."> 주석 해제
+           2. 아래 .ad-placeholder 대신 ins.adsbygoogle 블록 사용
+              <ins class="adsbygoogle"
+                   style="display:block"
+                   data-ad-client="ca-pub-XXXXXXXXXXXXXXXXX"
+                   data-ad-slot="XXXXXXXXXX"
+                   data-ad-format="auto"
+                   data-full-width-responsive="true"></ins>
+              <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    ─────────────────────────────────────────── -->
+    <div class="ad-wrap">
+      <div class="ad-placeholder">📢 광고 영역 (AdSense Publisher ID 등록 후 활성화)</div>
+    </div>
 
     <!-- CTA 카드 -->
     <div class="result-section" style="padding-top:0">
@@ -651,15 +705,102 @@ function restartTest() {
   startTest();
 }
 
-function shareResult() {
+// ── OG / 공유 이미지 생성 (Canvas) ──────────────────
+function generateShareImage(type) {
+  return new Promise(resolve => {
+    const t = TYPES[type];
+    const canvas = document.createElement('canvas');
+    canvas.width = 1200; canvas.height = 630;
+    const ctx = canvas.getContext('2d');
+
+    // 배경 그라데이션
+    const grad = ctx.createLinearGradient(0, 0, 1200, 630);
+    grad.addColorStop(0, '#3182f6');
+    grad.addColorStop(1, '#5b8ff9');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, 1200, 630);
+
+    // 흰 카드
+    ctx.fillStyle = 'rgba(255,255,255,0.15)';
+    ctx.beginPath();
+    ctx.roundRect(60, 60, 1080, 510, 32);
+    ctx.fill();
+
+    // 이모지 (큰 글자)
+    ctx.font = '160px serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(t.emoji, 260, 380);
+
+    // 제목
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold 52px -apple-system, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('나의 소비 유형', 400, 220);
+
+    // 타입명
+    ctx.font = 'bold 72px -apple-system, sans-serif';
+    ctx.fillStyle = '#fff';
+    ctx.fillText(t.name, 400, 320);
+
+    // 태그라인 (줄바꿈 처리)
+    ctx.font = '32px -apple-system, sans-serif';
+    ctx.fillStyle = 'rgba(255,255,255,0.85)';
+    const words = t.tagline.split(' ');
+    let line = ''; let y = 400;
+    for (const word of words) {
+      const test = line + word + ' ';
+      if (ctx.measureText(test).width > 720 && line) {
+        ctx.fillText(line.trim(), 400, y); line = word + ' '; y += 44;
+      } else { line = test; }
+    }
+    if (line) ctx.fillText(line.trim(), 400, y);
+
+    // 하단 앱명
+    ctx.font = 'bold 28px -apple-system, sans-serif';
+    ctx.fillStyle = 'rgba(255,255,255,0.7)';
+    ctx.textAlign = 'right';
+    ctx.fillText('💸 돈성 테스트', 1140, 540);
+
+    resolve(canvas.toDataURL('image/png'));
+  });
+}
+
+async function shareResult() {
   const t = TYPES[resultType];
-  const text = `나의 소비 유형은 "${t.emoji} ${t.name}"!\n${t.tagline}\n\n나도 테스트해보기 👉`;
-  if (navigator.share) {
-    navigator.share({ title: '돈성 테스트 결과', text });
-  } else if (navigator.clipboard) {
-    navigator.clipboard.writeText(text).then(() => alert('결과가 클립보드에 복사됐어요! 친구에게 공유해보세요 📤'));
-  } else {
-    alert(text);
+  const shareText = `나의 소비 유형은 "${t.emoji} ${t.name}"!\n${t.tagline}\n\n나도 테스트해보기 👉 https://YOUR_DEPLOY_URL`;
+
+  // 이미지 생성 시도
+  try {
+    const imgData = await generateShareImage(resultType);
+
+    // Web Share API (이미지 포함, 모바일)
+    if (navigator.share && navigator.canShare) {
+      const blob = await (await fetch(imgData)).blob();
+      const file = new File([blob], 'donseong-result.png', { type: 'image/png' });
+      if (navigator.canShare({ files: [file] })) {
+        await navigator.share({ title: '돈성 테스트 결과', text: shareText, files: [file] });
+        return;
+      }
+    }
+
+    // 이미지 다운로드 + 텍스트 복사 (데스크탑)
+    if (navigator.clipboard) {
+      await navigator.clipboard.writeText(shareText);
+    }
+    const a = document.createElement('a');
+    a.href = imgData;
+    a.download = `돈성-${t.name}.png`;
+    a.click();
+    setTimeout(() => alert('결과 이미지가 저장됐어요!\n텍스트도 클립보드에 복사됐습니다 📤'), 300);
+
+  } catch(e) {
+    // fallback: 텍스트만
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(shareText)
+        .then(() => alert('결과가 클립보드에 복사됐어요! 친구에게 공유해보세요 📤'));
+    } else {
+      alert(shareText);
+    }
   }
 }
 </script>
