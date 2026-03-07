@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>돈성 — 나의 소비 유형 테스트</title>
+  <meta property="og:title" content="돈성 — 나의 소비 유형 테스트" />
+  <meta property="og:description" content="10초 만에 알아보는 내 소비 유형 🔍" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+    :root {
+      --blue: #3182f6;
+      --blue-light: #ebf3fe;
+      --gray-50: #f9fafb;
+      --gray-100: #f3f4f6;
+      --gray-200: #e5e7eb;
+      --gray-400: #9ca3af;
+      --gray-600: #6b7280;
+      --gray-800: #1f2937;
+      --gray-900: #111827;
+      --radius: 16px;
+      --shadow: 0 4px 24px rgba(0,0,0,0.08);
+    }
+
+    html, body {
+      height: 100%;
+      font-family: -apple-system, 'Apple SD Gothic Neo', BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--gray-50);
+      color: var(--gray-900);
+      overflow-x: hidden;
+    }
+
+    #app {
+      min-height: 100vh;
+      max-width: 430px;
+      margin: 0 auto;
+      background: #fff;
+      position: relative;
+    }
+
+    /* ── SCREENS ── */
+    .screen {
+      display: none;
+      flex-direction: column;
+      min-height: 100vh;
+      padding: 0;
+      animation: fadeIn 0.3s ease;
+    }
+    .screen.active { display: flex; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── LANDING ── */
+    #landing {
+      align-items: center;
+      justify-content: space-between;
+      padding: 60px 24px 40px;
+      text-align: center;
+    }
+    .landing-top { display: flex; flex-direction: column; align-items: center; gap: 20px; flex: 1; justify-content: center; }
+    .landing-emoji { font-size: 72px; line-height: 1; }
+    .landing-title { font-size: 28px; font-weight: 800; letter-spacing: -0.5px; line-height: 1.3; }
+    .landing-title span { color: var(--blue); }
+    .landing-sub { font-size: 15px; color: var(--gray-600); line-height: 1.6; margin-top: 4px; }
+    .landing-badges { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-top: 4px; }
+    .badge {
+      background: var(--blue-light); color: var(--blue);
+      font-size: 13px; font-weight: 600;
+      padding: 6px 12px; border-radius: 100px;
+    }
+    .landing-characters {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 10px; width: 100%; margin: 20px 0;
+    }
+    .char-preview {
+      background: var(--gray-50); border-radius: 12px;
+      padding: 10px 6px; text-align: center; font-size: 11px;
+      color: var(--gray-600); cursor: default;
+    }
+    .char-preview .emoji { font-size: 28px; display: block; margin-bottom: 4px; }
+
+    /* ── PROGRESS BAR ── */
+    .progress-bar-wrap {
+      padding: 20px 24px 0;
+      position: sticky; top: 0; background: #fff; z-index: 10;
+    }
+    .progress-header {
+      display: flex; justify-content: space-between;
+      align-items: center; margin-bottom: 10px;
+    }
+    .progress-header .q-label { font-size: 13px; color: var(--gray-400); font-weight: 500; }
+    .progress-header .q-num { font-size: 13px; color: var(--blue); font-weight: 700; }
+    .progress-track {
+      height: 6px; background: var(--gray-100); border-radius: 100px; overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%; background: var(--blue); border-radius: 100px;
+      transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* ── QUESTION ── */
+    #question { padding: 0; }
+    .q-body { padding: 28px 24px 32px; flex: 1; display: flex; flex-direction: column; gap: 24px; }
+    .q-text {
+      font-size: 20px; font-weight: 700; line-height: 1.45;
+      letter-spacing: -0.3px; color: var(--gray-900);
+    }
+    .q-emoji { font-size: 32px; margin-bottom: 4px; display: block; }
+    .options { display: flex; flex-direction: column; gap: 10px; }
+    .option {
+      background: var(--gray-50); border: 2px solid var(--gray-100);
+      border-radius: var(--radius); padding: 16px 18px;
+      font-size: 15px; font-weight: 500; color: var(--gray-800);
+      cursor: pointer; text-align: left;
+      transition: all 0.15s ease;
+      display: flex; align-items: center; gap: 12px;
+      line-height: 1.4;
+    }
+    .option:hover { border-color: var(--blue); background: var(--blue-light); }
+    .option.selected { border-color: var(--blue); background: var(--blue-light); color: var(--blue); }
+    .option-letter {
+      width: 28px; height: 28px; min-width: 28px;
+      background: var(--gray-200); border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 700; color: var(--gray-600);
+      transition: all 0.15s;
+    }
+    .option.selected .option-letter { background: var(--blue); color: #fff; }
+
+    /* ── LOADING ── */
+    #loading {
+      align-items: center; justify-content: center; gap: 24px;
+      text-align: center; padding: 40px 24px;
+    }
+    .loading-emoji { font-size: 64px; animation: spin 1.5s linear infinite; display: block; }
+    @keyframes spin { 0%,100%{transform:rotate(-15deg) scale(1)} 50%{transform:rotate(15deg) scale(1.1)} }
+    .loading-text { font-size: 20px; font-weight: 700; }
+    .loading-sub { font-size: 14px; color: var(--gray-400); }
+    .loading-bar-wrap { width: 200px; height: 6px; background: var(--gray-100); border-radius: 100px; overflow: hidden; }
+    .loading-bar { height: 100%; background: var(--blue); border-radius: 100px; animation: loadAnim 1.8s ease-in-out forwards; }
+    @keyframes loadAnim { from{width:0} to{width:100%} }
+
+    /* ── RESULT ── */
+    #result { padding: 0 0 80px; }
+    .result-header {
+      padding: 32px 24px 24px;
+      background: linear-gradient(135deg, var(--blue) 0%, #5b8ff9 100%);
+      color: #fff; text-align: center;
+      border-radius: 0 0 32px 32px;
+    }
+    .result-label { font-size: 13px; font-weight: 600; opacity: 0.8; margin-bottom: 8px; }
+    .result-emoji { font-size: 72px; display: block; margin: 8px 0; }
+    .result-type { font-size: 28px; font-weight: 800; letter-spacing: -0.5px; }
+    .result-tagline { font-size: 14px; opacity: 0.85; margin-top: 8px; line-height: 1.5; }
+
+    .result-section { padding: 24px; }
+    .result-card {
+      background: var(--gray-50); border-radius: var(--radius);
+      padding: 20px; margin-bottom: 16px;
+    }
+    .section-title {
+      font-size: 13px; font-weight: 700; color: var(--gray-400);
+      text-transform: uppercase; letter-spacing: 0.5px;
+      margin-bottom: 14px;
+    }
+    .desc-text { font-size: 15px; line-height: 1.7; color: var(--gray-800); }
+
+    .rx-list { display: flex; flex-direction: column; gap: 12px; }
+    .rx-item {
+      display: flex; gap: 12px; align-items: flex-start;
+      background: #fff; border-radius: 12px; padding: 14px 16px;
+      border: 1px solid var(--gray-100);
+    }
+    .rx-num {
+      width: 24px; height: 24px; min-width: 24px;
+      background: var(--blue); color: #fff;
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 700;
+    }
+    .rx-text { font-size: 14px; line-height: 1.6; color: var(--gray-800); }
+
+    .cta-card {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      border-radius: var(--radius); padding: 20px;
+      color: #fff; margin-bottom: 16px; cursor: pointer;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .cta-card .cta-label { font-size: 12px; opacity: 0.8; margin-bottom: 4px; }
+    .cta-card .cta-title { font-size: 16px; font-weight: 700; }
+    .cta-card .cta-arrow { font-size: 20px; }
+
+    /* ── BUTTONS ── */
+    .btn {
+      width: 100%; padding: 18px;
+      border: none; border-radius: var(--radius);
+      font-size: 16px; font-weight: 700;
+      cursor: pointer; transition: all 0.15s;
+      font-family: inherit;
+    }
+    .btn-primary { background: var(--blue); color: #fff; }
+    .btn-primary:hover { background: #2563eb; }
+    .btn-primary:active { transform: scale(0.98); }
+    .btn-secondary {
+      background: var(--gray-100); color: var(--gray-800);
+      margin-top: 10px;
+    }
+    .btn-share {
+      background: #fee500; color: #3c1e1e;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .btn-share img { width: 20px; height: 20px; }
+
+    /* ── BOTTOM CTA area ── */
+    .btn-area { padding: 0 24px; display: flex; flex-direction: column; gap: 10px; }
+
+    /* ── AD PLACEHOLDER ── */
+    .ad-placeholder {
+      margin: 0 24px 16px;
+      background: var(--gray-100); border-radius: 12px;
+      height: 56px; display: flex; align-items: center; justify-content: center;
+      font-size: 12px; color: var(--gray-400);
+    }
+
+    /* ── RETRY button on result ── */
+    .retry-link {
+      text-align: center; padding: 8px;
+      font-size: 14px; color: var(--gray-400);
+      cursor: pointer; text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+<div id="app">
+
+  <!-- ① LANDING -->
+  <div id="landing" class="screen active">
+    <div class="landing-top">
+      <span class="landing-emoji">💸</span>
+      <div>
+        <div class="landing-title"><span>돈성</span> 테스트</div>
+        <div class="landing-title" style="font-size:22px; color: var(--gray-600); font-weight:600; margin-top:4px">나의 소비 유형은?</div>
+      </div>
+      <p class="landing-sub">10개 질문으로 알아보는<br>나만의 소비 캐릭터와 절약 처방전</p>
+      <div class="landing-badges">
+        <span class="badge">⏱ 1분 완성</span>
+        <span class="badge">💡 맞춤 처방전</span>
+        <span class="badge">📤 공유 가능</span>
+      </div>
+      <div class="landing-characters">
+        <div class="char-preview"><span class="emoji">🛍️</span>쇼핑왕</div>
+        <div class="char-preview"><span class="emoji">☕</span>카페홀릭</div>
+        <div class="char-preview"><span class="emoji">🍕</span>외식러버</div>
+        <div class="char-preview"><span class="emoji">📱</span>구독수집가</div>
+        <div class="char-preview"><span class="emoji">🎮</span>취미투자자</div>
+        <div class="char-preview"><span class="emoji">💰</span>미래설계자</div>
+        <div class="char-preview"><span class="emoji">🎁</span>선물요정</div>
+        <div class="char-preview"><span class="emoji">🎲</span>즉흥모험가</div>
+      </div>
+    </div>
+    <div style="padding: 0 24px 16px; width:100%">
+      <button class="btn btn-primary" onclick="startTest()">테스트 시작하기</button>
+    </div>
+  </div>
+
+  <!-- ② QUESTION -->
+  <div id="question" class="screen">
+    <div class="progress-bar-wrap">
+      <div class="progress-header">
+        <span class="q-label">소비 유형 테스트</span>
+        <span class="q-num" id="q-counter">1 / 10</span>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" id="progress-fill" style="width:10%"></div>
+      </div>
+    </div>
+    <div class="q-body">
+      <div>
+        <span class="q-emoji" id="q-emoji">🤔</span>
+        <div class="q-text" id="q-text"></div>
+      </div>
+      <div class="options" id="options"></div>
+    </div>
+  </div>
+
+  <!-- ③ LOADING -->
+  <div id="loading" class="screen">
+    <span class="loading-emoji">🔍</span>
+    <div class="loading-text">소비 유형 분석 중...</div>
+    <div class="loading-sub">당신만의 처방전을 만들고 있어요</div>
+    <div class="loading-bar-wrap">
+      <div class="loading-bar"></div>
+    </div>
+  </div>
+
+  <!-- ④ RESULT -->
+  <div id="result" class="screen">
+    <div class="result-header">
+      <div class="result-label">당신의 소비 유형은</div>
+      <span class="result-emoji" id="r-emoji"></span>
+      <div class="result-type" id="r-type"></div>
+      <div class="result-tagline" id="r-tagline"></div>
+    </div>
+
+    <div class="result-section">
+      <div class="result-card">
+        <div class="section-title">유형 설명</div>
+        <p class="desc-text" id="r-desc"></p>
+      </div>
+
+      <div class="result-card">
+        <div class="section-title">💊 맞춤 절약 처방전</div>
+        <div class="rx-list" id="r-rx"></div>
+      </div>
+    </div>
+
+    <!-- 광고 영역 -->
+    <div class="ad-placeholder">📢 광고 영역 (AdMob 배너)</div>
+
+    <!-- CTA 카드 -->
+    <div class="result-section" style="padding-top:0">
+      <div class="cta-card" id="r-cta" onclick="handleCTA()">
+        <div>
+          <div class="cta-label">추천 액션</div>
+          <div class="cta-title" id="r-cta-text"></div>
+        </div>
+        <span class="cta-arrow">→</span>
+      </div>
+    </div>
+
+    <div class="btn-area">
+      <button class="btn btn-share" onclick="shareResult()">
+        📤 결과 공유하기
+      </button>
+      <button class="btn btn-secondary" onclick="restartTest()">다시 테스트하기</button>
+    </div>
+    <div class="retry-link" onclick="restartTest()">다른 유형도 보고 싶어요</div>
+    <div style="height: 20px"></div>
+  </div>
+
+</div>
+
+<script>
+// ── DATA ──────────────────────────────────────────────
+const QUESTIONS = [
+  {
+    emoji: "💳",
+    text: "최근 한 달, 생각보다 지출이 많았던 카테고리는?",
+    options: [
+      { label: "쇼핑 · 의류 · 화장품", scores: { S: 3 } },
+      { label: "카페 · 음료 · 디저트", scores: { C: 3 } },
+      { label: "외식 · 배달 · 술자리", scores: { D: 3 } },
+      { label: "구독 서비스 · 앱 결제", scores: { U: 3 } },
+    ]
+  },
+  {
+    emoji: "😤",
+    text: "스트레스 받을 때 나의 해소법은?",
+    options: [
+      { label: "쇼핑몰 켜서 원하던 거 구매", scores: { S: 3 } },
+      { label: "카페 가서 음료 한 잔 마시기", scores: { C: 3 } },
+      { label: "좋아하는 취미 활동에 빠지기", scores: { H: 3 } },
+      { label: "친구 불러서 맛있는 거 사주기", scores: { G: 2, D: 1 } },
+    ]
+  },
+  {
+    emoji: "🎂",
+    text: "친구 생일이 2주 후예요. 지금 당신은?",
+    options: [
+      { label: "미리 예산 정하고 선물 리서치", scores: { G: 2, F: 1 } },
+      { label: "당일 편의점에서 빠르게 해결", scores: { A: 3 } },
+      { label: "맛있는 거 사주는 게 최고지", scores: { D: 2, G: 1 } },
+      { label: "특별한 경험 선물 (클래스, 체험)", scores: { H: 2, G: 1 } },
+    ]
+  },
+  {
+    emoji: "💰",
+    text: "월급날, 가장 먼저 하는 행동은?",
+    options: [
+      { label: "자동이체로 저축 먼저 빼놓기", scores: { F: 3 } },
+      { label: "사고 싶었던 것 바로 주문", scores: { S: 2, A: 1 } },
+      { label: "이번 달 뭐 먹을지 고민 시작", scores: { D: 3 } },
+      { label: "주변에 선물할 사람 떠올리기", scores: { G: 3 } },
+    ]
+  },
+  {
+    emoji: "🛒",
+    text: "쇼핑 앱에서 아이쇼핑하다가 마음에 드는 게 생겼어요.",
+    options: [
+      { label: "바로 결제! 살 때가 행복한 순간", scores: { S: 3 } },
+      { label: "장바구니에 담고 며칠 후 다시 확인", scores: { F: 2, S: 1 } },
+      { label: "리뷰 다 읽고 최저가 찾아서 구매", scores: { F: 3 } },
+      { label: "음… 그냥 닫기 (별로 안 필요한 것 같아)", scores: { F: 2, H: 1 } },
+    ]
+  },
+  {
+    emoji: "📱",
+    text: "새로운 OTT · 앱 구독 광고를 봤어요. 1개월 무료래요!",
+    options: [
+      { label: "일단 무료 가입! 나중에 끊으면 됨", scores: { U: 3 } },
+      { label: "정말 쓸 것 같을 때만 가입", scores: { F: 3 } },
+      { label: "이미 구독 너무 많아서 패스", scores: { U: 2, F: 1 } },
+      { label: "친구랑 같이 쓰자고 연락", scores: { G: 2, U: 1 } },
+    ]
+  },
+  {
+    emoji: "☕",
+    text: "공부 or 재택근무할 때 주로 어디서 하나요?",
+    options: [
+      { label: "카페 없이는 집중 못해! 매일 카페", scores: { C: 3 } },
+      { label: "카페 가끔, 주로 집에서", scores: { C: 1, F: 1 } },
+      { label: "카페 돈 아까워 — 완전 집돌이/집순이", scores: { F: 2 } },
+      { label: "카페도 가지만 취미 공간(헬스장 등)도", scores: { H: 2, C: 1 } },
+    ]
+  },
+  {
+    emoji: "🍕",
+    text: "배달앱 켜는 빈도가 어느 정도예요?",
+    options: [
+      { label: "거의 매일 (없으면 뭘 먹어요?)", scores: { D: 3 } },
+      { label: "주 2~3회, 바쁠 때 자주", scores: { D: 2 } },
+      { label: "쿠폰 있을 때나 특별한 날만", scores: { F: 2, D: 1 } },
+      { label: "거의 안 씀 (직접 요리파)", scores: { F: 3 } },
+    ]
+  },
+  {
+    emoji: "🎮",
+    text: "좋아하는 취미가 생겼어요. 장비 or 재료가 필요합니다.",
+    options: [
+      { label: "제대로 하려면 장비가 중요! 투자해야지", scores: { H: 3 } },
+      { label: "일단 저렴한 것부터 시작해보기", scores: { F: 2, H: 1 } },
+      { label: "중고로 먼저 구해서 써보기", scores: { F: 3 } },
+      { label: "취미보다 먹고 마시는 게 더 좋아", scores: { D: 2, C: 1 } },
+    ]
+  },
+  {
+    emoji: "💸",
+    text: "솔직히 이번 달 통장 상태는?",
+    options: [
+      { label: "저축 목표 달성! 계획대로야", scores: { F: 3 } },
+      { label: "쇼핑을 좀 많이 했네… 반성", scores: { S: 3 } },
+      { label: "먹는 데 너무 많이 쓴 것 같아", scores: { D: 2, C: 1 } },
+      { label: "어디에 쓴지 기억도 안 남", scores: { A: 3 } },
+    ]
+  },
+];
+
+const TYPES = {
+  S: {
+    emoji: "🛍️",
+    name: "쇼핑 왕",
+    tagline: "장바구니가 언제나 가득 — 구매할 때 가장 행복한 타입",
+    desc: "새 물건을 사는 순간이 가장 설레는 당신. 쇼핑은 취미이자 스트레스 해소법이에요. 원하는 것에 과감히 투자하는 결단력이 있지만, 지갑이 생각보다 빨리 비는 게 고민이죠.",
+    rx: [
+      "🛒 장바구니 24시간 숙려제 — 담아두고 하루 뒤에도 사고 싶으면 그때 결제하기",
+      "💳 신용카드 → 체크카드 전환 — 잔액이 보여야 소비 브레이크가 걸려요",
+      "📦 월 쇼핑 예산 봉투 만들기 — 예산 소진 시 이번 달 쇼핑 종료",
+    ],
+    cta: "토스 체크카드로 소비 관리 시작하기",
+    ctaUrl: "https://toss.im"
+  },
+  C: {
+    emoji: "☕",
+    name: "카페 홀릭",
+    tagline: "카페는 내 제2의 집 — 아아 없이는 하루가 시작 안 돼",
+    desc: "카페는 단순히 음료를 마시는 곳이 아니라 나만의 충전 공간이에요. 집중도 잘 되고 힐링도 되지만, 한 달 카페 영수증을 합산해보면 깜짝 놀랄 수도 있어요.",
+    rx: [
+      "🏠 홈카페 챌린지 — 주 2회는 집에서 만들기 (1잔 아끼면 월 2~3만원 절약)",
+      "🎫 저가 카페 구독권 활용 — 메가커피·컴포즈 월정액으로 비용 고정하기",
+      "📲 스탬프 적립 앱 꼭 활용 — 카페 갈 거라면 포인트라도 챙기기",
+    ],
+    cta: "내 동네 구독 카페 찾아보기",
+    ctaUrl: "https://toss.im"
+  },
+  D: {
+    emoji: "🍕",
+    name: "외식 러버",
+    tagline: "맛있는 음식이 인생의 낙 — 배달앱이 없으면 살 수 없어",
+    desc: "먹는 게 제일 행복한 당신. 좋은 음식에는 아낌없이 투자하고, 배달앱 앞에서 고민하는 시간이 즐거울 정도예요. 다만 한 달 식비 합산해보면 생각보다 꽤 많을 거예요.",
+    rx: [
+      "🥘 밀키트 활용하기 — 외식 맛, 집밥 비용 (1~2만원대로 외식 기분 내기)",
+      "🎟️ 배달앱 구독·쿠폰 최대한 활용 — 배달비 아끼는 것만으로 월 수만원 절약",
+      "👨‍🍳 주 1회 '직접 요리의 날' 설정 — 요리도 취미가 될 수 있어요",
+    ],
+    cta: "쿠팡이츠 로켓프레시 할인 확인",
+    ctaUrl: "https://toss.im"
+  },
+  U: {
+    emoji: "📱",
+    name: "구독 수집가",
+    tagline: "새 서비스는 일단 구독 — 근데 다 쓰는지는… 잘 모르겠어",
+    desc: "새로운 서비스에 호기심이 많고 편의성을 중시하는 당신. 결제일에 나가는 구독료가 몇 가지인지 정확히 알고 있나요? 지금 당장 확인해보면 깜짝 놀랄지도 몰라요.",
+    rx: [
+      "📋 구독 서비스 전체 목록 작성 — 지금 당장 결제 내역 확인 후 리스트업",
+      "✂️ 안 쓰는 구독 즉시 해지 — 이번 달 목표: 최소 1개 정리하기",
+      "⏰ 신규 구독 전 30일 무료 먼저 — 결제 전 정말 쓰는지 확인하는 습관",
+    ],
+    cta: "결제 내역에서 구독료 확인하기",
+    ctaUrl: "https://toss.im"
+  },
+  H: {
+    emoji: "🎮",
+    name: "취미 투자자",
+    tagline: "취미는 삶의 에너지 — 좋아하는 것엔 아낌없이 투자해야지",
+    desc: "취미에 진지하게 임하는 당신. 장비와 재료에 투자하는 것을 아깝다 생각하지 않아요. 취미가 삶의 활력소가 되지만, 업그레이드 욕심이 생기는 게 함정이에요.",
+    rx: [
+      "♻️ 중고 거래로 취미템 순환 — 쓰던 것 팔고 새것 사는 루틴 (당근마켓 적극 활용)",
+      "💵 취미 월 예산 한도 설정 — 예산 안에서 최대한 즐기는 게임으로 만들기",
+      "🧪 렌탈·공유 서비스 먼저 체험 — 장비 사기 전 빌려서 정말 맞는지 확인",
+    ],
+    cta: "당근마켓에서 취미 중고템 찾기",
+    ctaUrl: "https://toss.im"
+  },
+  F: {
+    emoji: "💰",
+    name: "미래 설계자",
+    tagline: "저축이 먼저, 소비는 나중 — 미래를 위해 현재를 아끼는 타입",
+    desc: "재정 관리의 모범생인 당신. 저축과 투자를 먼저 하고 남은 돈으로 생활하는 알뜰함이 있어요. 다만 너무 아끼다 보면 현재의 소소한 행복을 놓칠 수 있어요.",
+    rx: [
+      "🎉 월 '즐거움 예산' 만들기 — 죄책감 없이 쓸 수 있는 나만의 용돈 계좌",
+      "✈️ 큰 지출은 미리 계획 — 여행·명품 등 연간 계획하면 죄책감 없이 즐길 수 있어요",
+      "📊 저축률 체크 — 20% 초과라면 여유 예산 조금 늘려 삶의 질 높이기",
+    ],
+    cta: "IRP 연금 세액공제로 절세하기",
+    ctaUrl: "https://toss.im"
+  },
+  G: {
+    emoji: "🎁",
+    name: "선물 요정",
+    tagline: "내 것보다 남의 것이 먼저 — 주는 것에서 행복을 찾는 타입",
+    desc: "주변 사람을 기쁘게 하는 것이 행복인 당신. 선물 고르는 시간이 즐겁고 받는 사람의 표정이 보람이에요. 다만 나 자신을 위한 지출은 상대적으로 줄어들 수 있어요.",
+    rx: [
+      "📅 연간 선물 예산 계획 — 챙겨야 할 인원 × 예산을 미리 정해두기",
+      "💌 돈 대신 시간으로 — 직접 만든 것, 함께하는 경험이 때론 더 기억에 남아요",
+      "🛍️ 나만의 위시리스트 — 내가 갖고 싶은 것도 적어두고 가끔 선물해보기",
+    ],
+    cta: "토스페이로 마음 편하게 선물하기",
+    ctaUrl: "https://toss.im"
+  },
+  A: {
+    emoji: "🎲",
+    name: "즉흥 모험가",
+    tagline: "예산? 그게 뭐예요 — 기분과 순간에 따라 자유롭게 소비해요",
+    desc: "계획보다 느낌을 따르는 자유로운 소비 스타일. 그때그때 기분에 따라 지출하다 보니 한 달이 지나면 돈이 어디 갔는지 모르는 경우가 많아요. 기록이 먼저예요!",
+    rx: [
+      "💵 주간 현금 봉투법 — 현금 꺼내 쓰면 소비가 눈에 보여 자연스럽게 줄어들어요",
+      "📖 거래 내역 주 1회만 확인 — 매일 보면 스트레스, 주 1회 정기 점검으로 습관화",
+      "🏦 월급날 자동이체 1개 설정 — 저축 하나만 자동화해도 인생이 달라져요",
+    ],
+    cta: "토스 자동저축 지금 바로 설정",
+    ctaUrl: "https://toss.im"
+  },
+};
+
+// ── STATE ──────────────────────────────────────────────
+let scores = { S:0, C:0, D:0, U:0, H:0, F:0, G:0, A:0 };
+let currentQ = 0;
+let resultType = null;
+
+// ── HELPERS ──────────────────────────────────────────────
+function show(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+function startTest() {
+  scores = { S:0, C:0, D:0, U:0, H:0, F:0, G:0, A:0 };
+  currentQ = 0;
+  show('question');
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = QUESTIONS[currentQ];
+  const total = QUESTIONS.length;
+
+  document.getElementById('q-counter').textContent = `${currentQ + 1} / ${total}`;
+  document.getElementById('progress-fill').style.width = `${((currentQ + 1) / total) * 100}%`;
+  document.getElementById('q-emoji').textContent = q.emoji;
+  document.getElementById('q-text').textContent = q.text;
+
+  const letters = ['A', 'B', 'C', 'D'];
+  const optionsEl = document.getElementById('options');
+  optionsEl.innerHTML = q.options.map((opt, i) => `
+    <button class="option" onclick="selectOption(${i})">
+      <span class="option-letter">${letters[i]}</span>
+      <span>${opt.label}</span>
+    </button>
+  `).join('');
+}
+
+function selectOption(idx) {
+  // Visual feedback
+  document.querySelectorAll('.option').forEach((el, i) => {
+    el.classList.toggle('selected', i === idx);
+  });
+
+  // Add scores
+  const chosen = QUESTIONS[currentQ].options[idx].scores;
+  for (const [key, val] of Object.entries(chosen)) {
+    scores[key] = (scores[key] || 0) + val;
+  }
+
+  // Delay before next question
+  setTimeout(() => {
+    currentQ++;
+    if (currentQ < QUESTIONS.length) {
+      renderQuestion();
+    } else {
+      showLoading();
+    }
+  }, 350);
+}
+
+function showLoading() {
+  show('loading');
+  setTimeout(showResult, 2000);
+}
+
+function showResult() {
+  // Find winner
+  resultType = Object.entries(scores).sort((a, b) => b[1] - a[1])[0][0];
+  const t = TYPES[resultType];
+
+  document.getElementById('r-emoji').textContent = t.emoji;
+  document.getElementById('r-type').textContent = t.name;
+  document.getElementById('r-tagline').textContent = t.tagline;
+  document.getElementById('r-desc').textContent = t.desc;
+
+  document.getElementById('r-rx').innerHTML = t.rx.map((r, i) => `
+    <div class="rx-item">
+      <span class="rx-num">${i + 1}</span>
+      <span class="rx-text">${r}</span>
+    </div>
+  `).join('');
+
+  document.getElementById('r-cta-text').textContent = t.cta;
+  show('result');
+}
+
+function handleCTA() {
+  const t = TYPES[resultType];
+  if (t && t.ctaUrl) window.open(t.ctaUrl, '_blank');
+}
+
+function restartTest() {
+  startTest();
+}
+
+function shareResult() {
+  const t = TYPES[resultType];
+  const text = `나의 소비 유형은 "${t.emoji} ${t.name}"!\n${t.tagline}\n\n나도 테스트해보기 👉`;
+  if (navigator.share) {
+    navigator.share({ title: '돈성 테스트 결과', text });
+  } else if (navigator.clipboard) {
+    navigator.clipboard.writeText(text).then(() => alert('결과가 클립보드에 복사됐어요! 친구에게 공유해보세요 📤'));
+  } else {
+    alert(text);
+  }
+}
+</script>
+</body>
+</html>
