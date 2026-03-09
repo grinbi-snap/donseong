@@ -20,6 +20,9 @@ const WORKER_URL = 'https://donseong-auth.grinbi.workers.dev';
  * 토스 로그인 실행
  * @returns {Promise<{ userKey: string, name: string | null }>}
  */
+// 진단용: appLogin() 단독 호출 (handleTossLogin에서 단계별 사용)
+window.__appLoginRaw = () => appLogin();
+
 window.__tossLogin = async function () {
   const { authorizationCode, referrer } = await appLogin();
 

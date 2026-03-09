@@ -464,13 +464,41 @@ async function handleTossLogin() {
 
   try {
     if (typeof window.__tossLogin !== 'function') {
-      throw new Error('토스 앱에서만 로그인할 수 있어요.');
+      throw new Error('[1단계 실패] SDK 미로드 — 토스 앱 환경 아님');
     }
-    tossUser = await window.__tossLogin();
+    // 단계 1: appLogin() SDK 브리지 호출
+    btn.textContent = '[1/2] 토스 인증 중...';
+    let authCode, ref;
+    try {
+      const res = await window.__appLoginRaw();
+      authCode = res.authorizationCode;
+      ref = res.referrer;
+    } catch (e) {
+      throw new Error('[1단계 실패] appLogin: ' + e.message);
+    }
+
+    // 단계 2: Worker 토큰 교환
+    btn.textContent = '[2/2] 서버 통신 중...';
+    let data;
+    try {
+      const r = await fetch('https://donseong-auth.grinbi.workers.dev/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ authorizationCode: authCode, referrer: ref }),
+      });
+      if (!r.ok) {
+        const err = await r.json().catch(() => ({}));
+        throw new Error('HTTP ' + r.status + ' — ' + (err.detail || err.error || ''));
+      }
+      data = await r.json();
+    } catch (e) {
+      throw new Error('[2단계 실패] Worker: ' + e.message);
+    }
+
+    tossUser = data;
     sessionStorage.setItem('tossUser', JSON.stringify(tossUser));
     document.getElementById('loginWrap').style.display = 'none';
-    const name = tossUser.name || '고객';
-    _showToast(`${name}님, 반가워요!`);
+    _showToast((tossUser.name || '고객') + '님, 반가워요!');
   } catch (err) {
     alert(err.message);
     btn.disabled = false;
