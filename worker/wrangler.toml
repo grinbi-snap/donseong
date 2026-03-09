@@ -1,0 +1,6 @@
+name = "donseong-auth"
+main = "index.js"
+compatibility_date = "2024-09-23"
+
+# 시크릿은 아래 명령으로 등록 (콘솔에서 발급한 Base64 복호화 키):
+#   wrangler secret put DECRYPTION_KEY
