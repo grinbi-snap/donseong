@@ -14,7 +14,7 @@ import {
 
 // ── Cloudflare Worker URL ─────────────────────────────────────────────
 // wrangler deploy 후 출력된 URL로 교체: https://donseong-auth.XXX.workers.dev
-const WORKER_URL = 'https://donseong-auth.YOUR-SUBDOMAIN.workers.dev';
+const WORKER_URL = 'https://donseong-auth.grinbi.workers.dev';
 
 /**
  * 토스 로그인 실행
