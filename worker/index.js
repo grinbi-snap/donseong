@@ -8,7 +8,9 @@
  */
 
 const TOSS_API = 'https://apps-in-toss-api.toss.im';
-const ALLOWED_ORIGIN = 'https://grinbi-snap.github.io';
+// 앱인토스 WebView 내부 Origin은 CDN 주소라 사전에 알 수 없으므로 * 허용
+// 보안은 Toss OAuth authorizationCode 검증으로 보장됨
+const ALLOWED_ORIGIN = '*';
 
 export default {
   async fetch(request, env) {
