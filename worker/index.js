@@ -63,13 +63,13 @@ async function handleLogin(request, env) {
 
     const userInfo = await userRes.json();
 
-    // ── Step 3: name 복호화 (AES-256-GCM) ───────────────────────
+    // ── Step 3: name 복호화 (AES-256-GCM, AAD = "TOSS") ────────
     let name = null;
     if (userInfo.name && env.DECRYPTION_KEY) {
       name = await decryptAesGcm(
         userInfo.name,
         env.DECRYPTION_KEY,
-        String(userInfo.userKey)
+        'TOSS'   // 앱인토스 콘솔에서 확인된 고정 AAD값
       );
     }
 
